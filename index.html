@@ -34,13 +34,11 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet-measure.js"></script>
-        <script src="js/proj4.js"></script>
-        <script src="js/proj4leaflet.js"></script>
         <script src="js/tailDT.js"></script>
 <script src="js/nouislider.min.js"></script>
 <script src="js/wNumb.js"></script>
         <script src="data/_1.js"></script>
-        <script src="data/SheepMovementsMay2023_2.js"></script>
+        <script src="data/_2.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -58,15 +56,9 @@
             }
             highlightLayer.openPopup();
         }
-        var crs = new L.Proj.CRS('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs', {
-            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-        });
         var map = L.map('map', {
-            crs: crs,
-            continuousWorld: false,
-            worldCopyJump: false, 
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[52.32805404387472,0.3631284988063878],[52.33703675188671,0.38411502465563335]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -84,17 +76,24 @@
         .className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
             map.setMaxBounds(map.getBounds());
         }
-        map.createPane('pane_raster25k_5083487_0');
-        map.getPane('pane_raster25k_5083487_0').style.zIndex = 400;
-        var img_raster25k_5083487_0 = 'data/raster25k_5083487_0.png';
-        var img_bounds_raster25k_5083487_0 = [[52.32091545734505,0.345562092014079],[52.34124303441369,0.4004756074866562]];
-        var layer_raster25k_5083487_0 = new L.imageOverlay(img_raster25k_5083487_0,
-                                              img_bounds_raster25k_5083487_0,
-                                              {pane: 'pane_raster25k_5083487_0'});
-        bounds_group.addLayer(layer_raster25k_5083487_0);
-        map.addLayer(layer_raster25k_5083487_0);
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
         function pop__1(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -127,6 +126,19 @@
 
         function style__1_0(feature) {
             switch(String(feature.properties['EUI'])) {
+                case '10CE45FFFE007805':
+                    return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
                 case '10CE45FFFE007806':
                     return {
                 pane: 'pane__1',
@@ -144,7 +156,7 @@
                     return {
                 pane: 'pane__1',
                 opacity: 1,
-                color: 'rgba(31,120,180,1.0)',
+                color: 'rgba(43,131,186,1.0)',
                 dashArray: '',
                 lineCap: 'square',
                 lineJoin: 'bevel',
@@ -169,7 +181,7 @@
         });
         bounds_group.addLayer(layer__1);
         map.addLayer(layer__1);
-        function pop_SheepMovementsMay2023_2(feature, layer) {
+        function pop__2(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -205,6 +217,12 @@
                         <td colspan="2">' + (feature.properties['UTC Time'] !== null ? autolinker.link(feature.properties['UTC Time'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
+                        <td colspan="2">' + (feature.properties['UTC Date_1'] !== null ? autolinker.link(feature.properties['UTC Date_1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UTC Time_1'] !== null ? autolinker.link(feature.properties['UTC Time_1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
                         <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -213,16 +231,35 @@
                     <tr>\
                         <td colspan="2">' + (feature.properties['Altitude'] !== null ? autolinker.link(feature.properties['Altitude'].toLocaleString()) : '') + '</td>\
                     </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ts'] !== null ? autolinker.link(feature.properties['ts'].toLocaleString()) : '') + '</td>\
+                    </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_SheepMovementsMay2023_2_0(feature) {
+        function style__2_0(feature) {
             switch(String(feature.properties['EUI'])) {
+                case '10CE45FFFE007805':
+                    return {
+                pane: 'pane__2',
+                radius: 2.4,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
                 case '10CE45FFFE007806':
                     return {
-                pane: 'pane_SheepMovementsMay2023_2',
-                radius: 2.0,
+                pane: 'pane__2',
+                radius: 2.4,
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -237,8 +274,8 @@
                     break;
                 case 'F69E3ED27432CE60':
                     return {
-                pane: 'pane_SheepMovementsMay2023_2',
-                radius: 2.0,
+                pane: 'pane__2',
+                radius: 2.4,
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -247,32 +284,32 @@
                 weight: 1,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(31,120,180,1.0)',
+                fillColor: 'rgba(43,131,186,1.0)',
                 interactive: true,
             }
                     break;
             }
         }
-        map.createPane('pane_SheepMovementsMay2023_2');
-        map.getPane('pane_SheepMovementsMay2023_2').style.zIndex = 402;
-        map.getPane('pane_SheepMovementsMay2023_2').style['mix-blend-mode'] = 'normal';
-        var layer_SheepMovementsMay2023_2 = new L.geoJson(json_SheepMovementsMay2023_2, {
+        map.createPane('pane__2');
+        map.getPane('pane__2').style.zIndex = 402;
+        map.getPane('pane__2').style['mix-blend-mode'] = 'normal';
+        var layer__2 = new L.geoJson(json__2, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_SheepMovementsMay2023_2',
-            layerName: 'layer_SheepMovementsMay2023_2',
-            pane: 'pane_SheepMovementsMay2023_2',
-            onEachFeature: pop_SheepMovementsMay2023_2,
+            dataVar: 'json__2',
+            layerName: 'layer__2',
+            pane: 'pane__2',
+            onEachFeature: pop__2,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_SheepMovementsMay2023_2_0(feature));
+                return L.circleMarker(latlng, style__2_0(feature));
             },
         });
-        bounds_group.addLayer(layer_SheepMovementsMay2023_2);
-        map.addLayer(layer_SheepMovementsMay2023_2);
+        bounds_group.addLayer(layer__2);
+        map.addLayer(layer__2);
         setBounds();
         var mapDiv = document.getElementById('map');
         var row = document.createElement('div');
@@ -404,14 +441,14 @@
             var sel_UTCDate = document.getElementById('div_UTCDate');
             noUiSlider.create(sel_UTCDate, {
                 connect: true,
-                start: [120523, 250523],
+                start: [10623, 310523],
                 step: 1,
                 format: wNumb({
                     decimals: 0,
                     }),
                 range: {
-                min: 120523,
-                max: 250523
+                min: 10623,
+                max: 310523
                 }
             });
             sel_UTCDate.noUiSlider.on('update', function (values) {
@@ -423,11 +460,6 @@
             val_UTCDate.innerHTML = values.join(' - ');
                 filterFunc()
             });
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         </script>
     </body>
 </html>
